@@ -1,0 +1,13 @@
+[package]
+name = "rustnifti"
+version = "0.1.0"
+authors = ["glfharris"]
+
+[[bin]]
+name = "main"
+doc = false
+
+[dependencies]
+libc = "*"
+image = "*"
+rand = "*"
