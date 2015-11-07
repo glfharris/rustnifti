@@ -1,18 +1,17 @@
 extern crate image;
-extern crate rand;
 
 use image::{ImageBuffer, Luma};
 
 use std::path::Path;
-use std::fs::{File, metadata};
+use std::fs::File;
 use std::io::Read;
 use std::mem;
 mod header;
 
 fn main() {
-    let path = Path::new("C:/Users/glfha/Downloads/CT_vol.nii");
-    let h = header::read_header(&path).unwrap();
-    output_slices(&h, path);
+    //let path = Path::new();
+    //let h = header::read_header(&path).unwrap();
+    //output_slices(&h, path);
     //test_png();
     //println!("{:?}", h);
 }

@@ -1,7 +1,11 @@
 [package]
-name = "rustnifti"
-version = "0.1.0"
-authors = ["glfharris"]
+name = "telium"
+version = "0.1.1"
+authors = ["George Harris"]
+description = "Eventually a suite a libraries for medical science"
+repository = "http://www.github.com/glfharris/telium"
+keywords = ["science", "medical", "medicine"]
+license = "MIT"
 
 [[bin]]
 name = "main"
@@ -10,4 +14,3 @@ doc = false
 [dependencies]
 libc = "*"
 image = "*"
-rand = "*"
