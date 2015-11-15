@@ -4,12 +4,43 @@ use self::libc::{c_int, c_char, c_double, c_short, c_float};
 use std::mem;
 use std::path::Path;
 use std::fs::File;
-use std::error::Error;
+// use std::error::Error;
 use std::io::Read;
-use std::iter::Map;
+
+// pub fn generic_read_header(path: &Path) -> Result<NiftiHeader, String> {
+//
+//     let hsize = read_size(path);
+//     let mut buf = vec![0u8; hsize as usize];
+//     let mut file = File::open(path).unwrap();
+//
+//     file.read(&mut buf);
+//
+//     let header = match hsize {
+//         540 => Ok(read_nifti2h(buf)),
+//         348 => Ok(read_nifti1h(buf)),
+//         val => Err("Shit went down".to_string()),//format!("Header type not recognised: {} bytes", val)),
+//     };
+//     header
+// }
+// pub fn read_nifti2h(buf: Vec<u8>) -> NiftiHeader {
+//     let bhead: ByteNifti2Header = unsafe { mem::transmute_copy(&buf) };
+//     NiftiHeader::from_nifti2_byte_header(bhead)
+// }
+// pub fn read_nifti1h(buf: Vec<u8>) -> NiftiHeader {
+//     let bhead: ByteNifti1Header = unsafe { mem::transmute_copy(&buf) };
+//     NiftiHeader::from_nifti1_byte_header(bhead)
+// }
+
+pub fn read_size(path: &Path) -> u64 {
+    let mut file = File::open(path).unwrap();
+    let mut buf = [0u8; 4];
+    file.read(&mut buf).unwrap();
+    let hsize: i32 = unsafe { mem::transmute(buf) };
+    hsize as u64
+}
 
 pub fn read_header(path: &Path) -> Result<NiftiHeader, String> {
-    let header = match read_header_size(path) {
+    let header = match read_size(path) {
         540 => read_nifti2_header(path),
         348 => read_nifti1_header(path),
         val => return Err(format!("Header size reported {} bytes", val)),
@@ -26,6 +57,7 @@ pub fn read_nifti2_header(path: &Path) -> NiftiHeader {
     NiftiHeader::from_nifti2_byte_header(byteh)
 }
 
+
 pub fn read_nifti1_header(path: &Path) -> NiftiHeader {
     let mut file = File::open(path).unwrap();
     let mut buf = [0u8; 348];
@@ -33,30 +65,6 @@ pub fn read_nifti1_header(path: &Path) -> NiftiHeader {
     assert_eq!(bytes_read, buf.len());
     let byteh: ByteNifti1Header = unsafe { mem::transmute(buf) };
     NiftiHeader::from_nifti1_byte_header(byteh)
-}
-
-fn read_header_size(mypath: &Path) -> u64 {
-    let mut myfile = match File::open(&mypath) {
-        Err(why) => panic!("Couldn't open file {}: {}", mypath.display(), Error::description(&why)),
-        Ok(file) => file,
-    };
-    let mut buf = [0u8; 2];
-    let bytes_read = myfile.read(&mut buf).unwrap();
-    assert_eq!(bytes_read, buf.len());
-    let size = unsafe {mem::transmute::<[u8; 2], u16>(buf)};
-    size as u64
-}
-
-fn read_header_bytes(mypath: &Path, header_size: u64) -> Vec<u8> {
-    let myfile = match File::open(&mypath) {
-        Err(why) => panic!("Couldn't open file {}: {}", mypath.display(), Error::description(&why)),
-        Ok(file) => file,
-    };
-    let mut handle = myfile.take(header_size);
-    let mut buffer = Vec::new();
-    let bytes_read = handle.read_to_end(&mut buffer).unwrap();
-    assert_eq!(bytes_read, buffer.len());
-    buffer
 }
 
 #[repr(C)]
@@ -158,7 +166,10 @@ fn c_chars_to_string(chars: &[c_char]) -> String {
         let y = *x as u8;
         mediate.push(y);
     }
-    String::from_utf8(mediate).unwrap()
+    match String::from_utf8(mediate) {
+        Ok(mystr) => mystr,
+        Err(_) => panic!("Error in c_chars_to_string"),
+    }
 }
 
 #[derive(Default)]

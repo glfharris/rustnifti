@@ -1,2 +1,4 @@
 # telium
-A library for Medicine and Medical Physics, written in Rust
+A library for Medicine and Medical Physics, written in Rust.
+
+:microscope:
