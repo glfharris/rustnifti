@@ -1,29 +1,15 @@
-
-extern crate time;
-use time::PreciseTime;
+mod transform;
+use transform::ft::*;
 
 extern crate num;
-use num::iter::range;
-
-extern crate nalgebra;
-use nalgebra::{DMat, DVec};
-
-
-mod signals;
-mod numeric;
-use std::f32;
-use std::iter::Map;
-use numeric::function::{Domain, Eval};
-use numeric::polynomial::Polynomial;
-use numeric::interpolate::Interpolate;
-
+use num::Complex;
 
 fn main() {
-    let start = PreciseTime::now(); // Leave in place for testing & debugging
-    println!("Output:\n");
 
+    let v = vec![0.0, 1.0,2.0,3.0,4.0,5.0, 0.0,1.0,2.0,3.0,4.0,5.0];
+    let t = dft(v);
 
-
-    let end = PreciseTime::now(); // Leave in place for testing & debigging
-    println!("\nTime Elapsed: {} seconds", start.to(end));
+    for x in t {
+        println!("{:}", x.re);
+    }
 }
