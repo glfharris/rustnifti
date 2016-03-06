@@ -1,6 +1,6 @@
 [package]
 name = "telium"
-version = "0.0.1"
+version = "0.1.2"
 authors = ["George Harris"]
 description = "Eventually a suite a libraries for medical science"
 repository = "http://www.github.com/glfharris/telium"
@@ -12,5 +12,6 @@ name = "main"
 doc = false
 
 [dependencies]
-nalgebra = "*"
-num = "*"
+nalgebra = "0.5"
+num = "0.1"
+gnuplot = "*"
